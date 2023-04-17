@@ -2,6 +2,7 @@ from textwrap import dedent
 from telegram import Update
 from telegram.ext import Application, ContextTypes, CommandHandler, MessageHandler, filters
 from telegram.constants import ParseMode
+from config import token
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -12,7 +13,19 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def get_fuel_data(text):
-    return float("". join(c for c in text.replace(",", ".") if c.isdigit() or c == ".").strip("."))
+    text = text.replace(",", ".")
+    num_str = ""
+
+    for c in text:
+        if c.isdigit() or c == ".":
+            num_str += c
+        else:
+            num_str += " "
+    num_str = num_str.strip(". ")
+    num_str = num_str.split()[-1]
+    num_str = num_str.strip(".")
+
+    return float(num_str)
 
 
 async def measurement_error(update, context):
@@ -65,12 +78,15 @@ async def measurement_error(update, context):
         num = await get_fuel_data(update.message.text)
         context.user_data["final"] = num
         await update.message.reply_text(f"Конечный объем: {num} л")
+        event_volume = round(abs(num - context.user_data["init"]), 2)
 
         if num > context.user_data["init"]:
             event = "refueling"
+            await update.message.reply_text(f"Объем заправки по СМТ: {event_volume}")
             await update.message.reply_text("Введите фактический объем заправки...")
         else:
             event = "drain"
+            await update.message.reply_text(f"Объем слива по СМТ: {event_volume}")
             await update.message.reply_text("Введите фактический объем слива...")
         context.user_data["event"] = event
 
@@ -103,7 +119,7 @@ async def error_handler(update, context):
 
 if __name__ == '__main__':
 
-    application = Application.builder().token("5646146728:AAHsLsGMw0Ot4lhAWoeoTRk_XXmXPbVOuR4").build()
+    application = Application.builder().token(token).build()
 
     start_handler = CommandHandler('start', start)
     application.add_handler(start_handler)
