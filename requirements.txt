@@ -4,8 +4,13 @@ h11==0.14.0
 httpcore==0.16.3
 httpx==0.23.3
 idna==3.4
+numpy==1.24.2
+opencv-python==4.7.0.72
+packaging==23.1
+Pillow==9.5.0
 pyaes==1.6.1
 pyasn1==0.4.8
+pytesseract==0.3.10
 python-telegram-bot==20.2
 rfc3986==1.5.0
 rsa==4.9
