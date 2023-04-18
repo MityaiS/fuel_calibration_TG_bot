@@ -2,6 +2,8 @@ from textwrap import dedent
 from telegram import Update
 from telegram.ext import Application, ContextTypes, CommandHandler, MessageHandler, filters
 from telegram.constants import ParseMode
+import pytesseract
+import cv2
 from config import token
 
 
@@ -26,6 +28,14 @@ async def get_fuel_data(text):
     num_str = num_str.strip(".")
 
     return float(num_str)
+
+
+async def get_str_from_image(name):
+
+    image = cv2.imread(name)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    string = pytesseract.image_to_string(image, config="--psm 6 -c tessedit_char_whitelist=0123456789")
+    return string
 
 
 async def measurement_error(update, context):
@@ -109,7 +119,8 @@ async def calibration_photo(update, context):
 
     file = await update.message.effective_attachment[-1].get_file()
     await file.download_to_drive("calibration_photo")
-    await context.bot.send_document(chat_id=update.effective_chat.id, document="calibration_photo")
+    string = await get_str_from_image("calibration_photo")
+    await update.message.reply_text(string)
 
 
 async def error_handler(update, context):
