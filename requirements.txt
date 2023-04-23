@@ -5,7 +5,7 @@ httpcore==0.16.3
 httpx==0.23.3
 idna==3.4
 numpy==1.24.2
-opencv-python==4.7.0.72
+opencv-contrib-python==4.7.0.72
 packaging==23.1
 Pillow==9.5.0
 pyaes==1.6.1

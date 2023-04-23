@@ -1,10 +1,21 @@
+import logging
 from textwrap import dedent
 from telegram import Update
 from telegram.ext import Application, ContextTypes, CommandHandler, MessageHandler, filters
 from telegram.constants import ParseMode
-import pytesseract
-import cv2
 from config import token
+from utils import get_str_from_image, get_fuel_data
+
+
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.DEBUG,
+    filename="session.log",
+    filemode="w"
+)
+
+
+logger = logging.getLogger()
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -12,30 +23,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                    "техника в csv, то просто отправьте мне изображние *двух* столбцов. "
                                    "Если нужно расчитать погрешность, то отправьте мне *начальное* значение топлива.",
                                    parse_mode=ParseMode.MARKDOWN)
-
-
-async def get_fuel_data(text):
-    text = text.replace(",", ".")
-    num_str = ""
-
-    for c in text:
-        if c.isdigit() or c == ".":
-            num_str += c
-        else:
-            num_str += " "
-    num_str = num_str.strip(". ")
-    num_str = num_str.split()[-1]
-    num_str = num_str.strip(".")
-
-    return float(num_str)
-
-
-async def get_str_from_image(name):
-
-    image = cv2.imread(name)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    string = pytesseract.image_to_string(image, config="--psm 6 -c tessedit_char_whitelist=0123456789")
-    return string
 
 
 async def measurement_error(update, context):
@@ -118,8 +105,12 @@ async def reset(update, context):
 async def calibration_photo(update, context):
 
     file = await update.message.effective_attachment[-1].get_file()
+    try:
+        threshold = int(update.message.caption)
+    except:
+        threshold = 120
     await file.download_to_drive("calibration_photo")
-    string = await get_str_from_image("calibration_photo")
+    string = await get_str_from_image("calibration_photo", threshold)
     await update.message.reply_text(string)
 
 
@@ -127,6 +118,7 @@ async def error_handler(update, context):
 
     await update.message.reply_text("Ошибочка(, попробуйте еще раз")
     print(context.error)
+
 
 if __name__ == '__main__':
 
