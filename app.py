@@ -20,7 +20,7 @@ logger = logging.getLogger()
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Если нужно конвертировать фото таблицы "
-                                   "техника в csv, то просто отправьте мне изображние *двух* столбцов. "
+                                   "техника в текстовый формат, то просто отправьте мне изображние *одного* столбца. "
                                    "Если нужно расчитать погрешность, то отправьте мне *начальное* значение топлива.",
                                    parse_mode=ParseMode.MARKDOWN)
 

@@ -41,9 +41,9 @@ async def get_str_from_image(name, threshold):
             string += "u/r"
             string += "\n"
 
-    cv2.imshow("image", image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow("image", image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     return string
 
