@@ -3,3 +3,4 @@ __pycache__
 test.py
 calibration_photo
 config.py
+*.log
