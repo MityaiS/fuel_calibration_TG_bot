@@ -137,8 +137,8 @@ if __name__ == '__main__':
     measurement_error_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), measurement_error)
     application.add_handler(measurement_error_handler)
 
-    calibration_photo_handler = MessageHandler(filters.PHOTO, calibration_photo)
-    application.add_handler(calibration_photo_handler)
+    # calibration_photo_handler = MessageHandler(filters.PHOTO, calibration_photo)
+    # application.add_handler(calibration_photo_handler)
 
     reset_handler = CommandHandler("reset", reset)
     application.add_handler(reset_handler)
