@@ -1,5 +1,5 @@
 import pytesseract
-import cv2
+# import cv2
 import logging
 
 

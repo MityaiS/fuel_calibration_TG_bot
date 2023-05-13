@@ -4,7 +4,8 @@ from telegram import Update
 from telegram.ext import Application, ContextTypes, CommandHandler, MessageHandler, filters
 from telegram.constants import ParseMode
 from config import token
-from utils import get_str_from_image, get_fuel_data
+from utils import get_str_from_image
+# from utils import get_fuel_data
 
 
 logging.basicConfig(
